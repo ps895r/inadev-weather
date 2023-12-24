@@ -5,6 +5,9 @@ pipeline {
       steps {
         echo "building"
         sleep 10
+        script {
+          dockerImage = docker.build("weather" + ":$BUILD_NUMBER", "-f Dockerfile .")
+        }
       }
     }
     stage('Test') {

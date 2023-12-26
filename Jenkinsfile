@@ -6,7 +6,7 @@ pipeline {
         echo "building"
         sleep 10
         script {
-          sh "sudo su –"
+          sh "su –"
           dockerImage = docker.build("weather" + ":$BUILD_NUMBER", "-f Dockerfile .")
         }
       }

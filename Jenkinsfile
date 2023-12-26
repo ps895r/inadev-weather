@@ -6,7 +6,7 @@ pipeline {
         echo "building"
         sleep 10
         script {
-          sh "sudo apt-get update"
+          sh "apt-get update"
           dockerImage = docker.build("weather" + ":$BUILD_NUMBER", "-f Dockerfile .")
         }
       }

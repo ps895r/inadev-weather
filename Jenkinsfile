@@ -1,20 +1,39 @@
 pipeline {
+  
+  environment {
+    registry = "567935704451.dkr.ecr.us-east-1.amazonaws.com/inadev"
+  }
+  
   agent any
+  
   stages {
+
+    stage('Checkout Source') {
+      steps {
+        git branch: "main",
+        url: 'https://github.com/ps895r/inadev-weather.git'
+      }
+    }
+    
+    stage('Security and Code Quality Checks') {
+      steps {
+        echo "Add in SonarQube scanning later"
+      }
+    }
+    
     stage('Build') {
       steps {
         echo "building"
-        sleep 10
         script {
-          sh "su –"
-          dockerImage = docker.build("weather" + ":$BUILD_NUMBER", "-f Dockerfile .")
+          dockerImage = docker.build(registry + ":$BUILD_NUMBER", "-f Dockerfile .")
         }
       }
     }
-    stage('Test') {
+    stage('Push Image') {
       steps {
-        echo "testing"
-        sleep 30
+        docker.withRegistry( '567935704451.dkr.ecr.us-east-1.amazonaws.com/inadev', 'ecr:us-east-2:bot-jenkins-vid-inadev' )
+        dockerImage.push("${env.Build_NUMBER}")
+        dockerImage.push("latest")
       }
     }
     stage('Deploy') {
